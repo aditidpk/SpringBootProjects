@@ -1,6 +1,5 @@
 package com.project.finance_manager.signup.api.otpValidation;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -12,6 +11,6 @@ public class OTPRequest {
     @JsonProperty("otp")
     private String otp;
 
-    @JsonProperty("uuid")
+    @JsonProperty("id")
     private String uuid;
 }

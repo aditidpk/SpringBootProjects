@@ -47,15 +47,15 @@ public class SignupController {
     public ResponseEntity<?> validateOTP(@RequestBody OTPRequest request) throws Exception {
         try {
             signupService.isValidOTP(request);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             switch (e.getMessage()) {
-                case "UUID does not exist":
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 case "Invalid OTP":
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                default:
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

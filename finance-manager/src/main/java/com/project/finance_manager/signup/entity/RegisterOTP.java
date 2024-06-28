@@ -1,6 +1,6 @@
 package com.project.finance_manager.signup.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,21 +16,28 @@ public class RegisterOTP {
 
     private String otp;
 
-    private Date expiryDateTime;
+    private LocalDateTime expiryDateTime;
 
     private boolean isExpired;
+
+    private boolean isValidated;
+
+    public boolean isIsValidated() {
+        return this.isValidated;
+    }
 
     public RegisterOTP(){
 
     }
 
-    public RegisterOTP(String uuid, String email, String otp, Date expiryDateTime, boolean isExpired){
+    public RegisterOTP(String uuid, String email, String otp, boolean isExpired, boolean isValidated){
         System.out.println();
         this.uuid = uuid;
         this.email = email;
         this.otp = otp;
-        this.expiryDateTime = expiryDateTime;
+        this.expiryDateTime = LocalDateTime.now().plusMinutes(10);
         this.isExpired = isExpired;
+        this.isValidated = isValidated;
     }
 
     public String getUuid() {
@@ -57,11 +64,11 @@ public class RegisterOTP {
         this.otp = otp;
     }
 
-    public Date getExpiryDateTime() {
+    public LocalDateTime getExpiryDateTime() {
         return this.expiryDateTime;
     }
 
-    public void setExpiryDateTime(Date expiryDateTime) {
+    public void setExpiryDateTime(LocalDateTime expiryDateTime) {
         this.expiryDateTime = expiryDateTime;
     }
 
@@ -76,4 +83,13 @@ public class RegisterOTP {
     public void setIsExpired(boolean isExpired) {
         this.isExpired = isExpired;
     }
+
+    public boolean getIsValidated() {
+        return this.isValidated;
+    }
+
+    public void setIsValidated(boolean isValidated) {
+        this.isValidated = isValidated;
+    }
+
 }

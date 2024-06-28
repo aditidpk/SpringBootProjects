@@ -1,9 +1,5 @@
 package com.project.finance_manager.signup;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,29 +32,17 @@ public class SignupService {
     public String saveOTPInfo(String email) {
         String uuid = UUID.randomUUID().toString();
         String otp = utils.generateOTP();
-        Date date = new Date();
-        RegisterOTP registerOTP = new RegisterOTP(uuid, email, otp, date, false);
+        RegisterOTP registerOTP = new RegisterOTP(uuid, email, otp, false, false);
 
         signupRepository.save(registerOTP);
         return uuid;
     }
 
-    public boolean hasOTPExpired(RegisterOTP registerOTPFromDB) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime specificDateTime = LocalDateTime.parse(registerOTPFromDB.getExpiryDateTime().toString(),
-                formatter);
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        return (registerOTPFromDB.getIsExpired()
-                || Duration.between(specificDateTime, currentDateTime).toMinutes() > 3);
-    }
-
-    public boolean isValidOTP(OTPRequest request) throws Exception {
-        if (!signupRepository.existsByUuid(request.getUuid()))
-            throw new Exception("UUID does not exist");
-        RegisterOTP registerOTPFromDB = signupRepository.findByUuidAndOtp(request.getUuid(), request.getOtp());
-        if (registerOTPFromDB==null || hasOTPExpired(registerOTPFromDB))
+    public boolean isValidOTP(OTPRequest otpRequest) throws Exception {
+        if(signupRepository.findByUUIDAndOtp(otpRequest.getUuid(), otpRequest.getOtp()) == 0){
             throw new Exception("Invalid OTP");
-        registerOTPFromDB.setIsExpired(true);
+        }
+        signupRepository.updateIsValidatedByUUID(otpRequest.getUuid());
         return true;
     }
 }
