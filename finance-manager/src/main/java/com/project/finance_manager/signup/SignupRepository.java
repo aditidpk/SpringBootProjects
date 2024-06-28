@@ -22,4 +22,7 @@ public interface SignupRepository extends JpaRepository<RegisterOTP, String> {
     @Transactional
     @Query(value = "update register_otp set is_expired=1, is_validated=1 where uuid=:uuid", nativeQuery=true)
     void updateIsValidatedByUUID(String uuid);
+
+    @Query(value = "select COUNT(1) from users where email=:email", nativeQuery = true)
+    Long existsByEmail(String email);
 }

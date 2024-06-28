@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.finance_manager.signup.api.emailValidation.EmailRequest;
 import com.project.finance_manager.signup.api.emailValidation.EmailResponse;
 import com.project.finance_manager.signup.api.otpValidation.OTPRequest;
+import com.project.finance_manager.signup.api.userRegistration.UserRegRequest;
 import com.project.finance_manager.utils.Utils;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,8 +54,26 @@ public class SignupController {
                 case "Invalid OTP":
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 default:
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    @PostMapping("/register-user")
+    public ResponseEntity<?> registerUser(@RequestBody UserRegRequest request) {
+        try {
+            signupService.registerUser(request);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            switch (e.getMessage()) {
+                case "User already exists!":
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+                case "Incorrect email entered":
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                default:
                     return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
+
         }
     }
 
