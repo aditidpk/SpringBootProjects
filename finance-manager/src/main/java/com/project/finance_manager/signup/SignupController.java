@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.finance_manager.exception.ErrorMessages;
 import com.project.finance_manager.signup.api.emailValidation.EmailRequest;
 import com.project.finance_manager.signup.api.emailValidation.EmailResponse;
 import com.project.finance_manager.signup.api.otpValidation.OTPRequest;
@@ -38,7 +39,7 @@ public class SignupController {
 
             return new ResponseEntity<EmailResponse>(emailResponse, HttpStatus.OK);
         } catch (Exception e) {
-            if (e.getMessage().equals("User already exists!"))
+            if (e.getMessage().equals(ErrorMessages.USER_ALREADY_EXISTS))
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -51,7 +52,7 @@ public class SignupController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             switch (e.getMessage()) {
-                case "Invalid OTP":
+                case ErrorMessages.INVALID_OTP:
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 default:
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,9 +67,9 @@ public class SignupController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             switch (e.getMessage()) {
-                case "User already exists!":
+                case ErrorMessages.USER_ALREADY_EXISTS:
                     return new ResponseEntity<>(HttpStatus.CONFLICT);
-                case "Incorrect email entered":
+                case ErrorMessages.INCORRECT_EMAIL:
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 default:
                     return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

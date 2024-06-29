@@ -5,6 +5,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.finance_manager.exception.IncorrectEmailEnteredException;
+import com.project.finance_manager.exception.InvalidOTPException;
+import com.project.finance_manager.exception.UserAlreadyExistsException;
 import com.project.finance_manager.signup.api.otpValidation.OTPRequest;
 import com.project.finance_manager.signup.api.userRegistration.UserRegRequest;
 import com.project.finance_manager.signup.entity.RegisterOTP;
@@ -25,7 +28,7 @@ public class SignupService {
 
     public String getVerifiedEmailUUID(String email) throws Exception {
         if (userService.doesEmailExists(email))
-            throw new Exception("User already exists!");
+            throw new UserAlreadyExistsException();
 
         return saveOTPInfo(email);
     }
@@ -41,7 +44,7 @@ public class SignupService {
 
     public boolean isValidOTP(OTPRequest otpRequest) throws Exception {
         if (signupRepository.findByUUIDAndOtp(otpRequest.getUuid(), otpRequest.getOtp()) == 0) {
-            throw new Exception("Invalid OTP");
+            throw new InvalidOTPException();
         }
         signupRepository.updateIsValidatedByUUID(otpRequest.getUuid());
         return true;
@@ -50,7 +53,7 @@ public class SignupService {
     public void registerUser(UserRegRequest userRegRequest) throws Exception {
         try {
             if (signupRepository.existsByEmail(userRegRequest.getEmail()) == 0)
-                throw new Exception("Incorrect email entered");
+                throw new IncorrectEmailEnteredException();
             userService.registerNewUser(userRegRequest);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
